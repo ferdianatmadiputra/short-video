@@ -1,0 +1,17 @@
+.navItemContainer {
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 42px;
+}
+
+.activeIcon {
+  color: white;
+}
+
+.inactiveIcon {
+  color: gray;
+}
