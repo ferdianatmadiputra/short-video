@@ -1,29 +1,28 @@
-'use-client'
+"use client"
 
 import { useEffect, useRef } from "react";
-import 'shaka-player'
 
-export default function Player({ init, manifestUri, videoId} : {init: boolean, manifestUri: string }) {
+
+export default function Player ({ init, manifestUri, videoId} : {init: boolean, manifestUri: string, videoId: string }) {
   const videoRef = useRef(null)
+  window.shaka.polyfill.installAll();
 
   useEffect(() => {
     async function initPlayer() {
-      // Create a Player instance.
-      const player = new shaka.Player();
+      const player = new window.shaka.Player();
       if (videoRef.current) {
         await player.attach(videoRef.current);
       }
-    
+
       window.player = player;
     
-      // Listen for error events.
       player.addEventListener('error', onErrorEvent);
-    
-      // Try to load a manifest.
-      // This is an asynchronous process.
+
       try {
         await player.load(manifestUri);
         console.log('The video has now been loaded!');
+        // await player.getMediaElement().play(); // need user interaction
+        // console.log('The video is playing!');
       } catch (e) {
         onError(e);
       }
@@ -38,6 +37,7 @@ export default function Player({ init, manifestUri, videoId} : {init: boolean, m
     }
 
     if (init) initPlayer()
+    console.log('player initiated')
   }, [init, manifestUri])
 
   return (
@@ -49,6 +49,7 @@ export default function Player({ init, manifestUri, videoId} : {init: boolean, m
         poster=""
         controls
         autoPlay
+        muted
       />
     </div>
   )
