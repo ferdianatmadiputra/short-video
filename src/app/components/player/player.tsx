@@ -1,56 +1,33 @@
 "use client"
 
-import { useEffect, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
+import ShakaPlayer from "@/app/commons/shaka-player/shaka-player";
+import styles from './player.module.css'
 
-
-export default function Player ({ init, manifestUri, videoId} : {init: boolean, manifestUri: string, videoId: string }) {
+export default function Player ({ init, manifestUri, videoId, videoClass } : {init: boolean, manifestUri: string, videoId: string, videoClass?: string }) {
   const videoRef = useRef(null)
-  window.shaka.polyfill.installAll();
+  const shakaPlayer = useMemo(() => new ShakaPlayer(), [])
 
   useEffect(() => {
-    async function initPlayer() {
-      const player = new window.shaka.Player();
-      if (videoRef.current) {
-        await player.attach(videoRef.current);
-      }
-
-      window.player = player;
-    
-      player.addEventListener('error', onErrorEvent);
-
-      try {
-        await player.load(manifestUri);
-        console.log('The video has now been loaded!');
-        // await player.getMediaElement().play(); // need user interaction
-        // console.log('The video is playing!');
-      } catch (e) {
-        onError(e);
-      }
+    if (videoRef.current && init) {
+      shakaPlayer.init({
+        videoEl: videoRef.current,
+        manifestUri,
+        videoId
+      })
     }
-
-    function onErrorEvent(event) {
-      onError(event.detail);
-    }
-    
-    function onError(error) {
-      console.error('Error code', error.code, 'object', error);
-    }
-
-    if (init) initPlayer()
-    console.log('player initiated')
-  }, [init, manifestUri])
+  }, [manifestUri, shakaPlayer, videoId, init])
 
   return (
-    <div>
-      <video
-        ref={videoRef}
-        id="video"
-        width="640"
-        poster=""
-        controls
-        autoPlay
-        muted
-      />
-    </div>
+    <video
+      className={[videoClass, styles.video].join(" ")}
+      preload={"auto"}
+      ref={videoRef}
+      id="video"
+      poster=""
+      controls
+      autoPlay
+      muted
+    />
   )
 }

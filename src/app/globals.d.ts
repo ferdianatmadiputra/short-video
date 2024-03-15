@@ -3,6 +3,8 @@ interface Window {
   shaka: shaka;
 }
 
+type NullableHTMLMediaElement = HTMLMediaElement | null;
+
 /**
  * No official type from Shaka Player. See https://github.com/shaka-project/shaka-player/issues/1030.
  * source: https://gist.githubusercontent.com/niklaskorz/4847dacb16a7c3d5a227be12f6c0faae/raw/b7743313c4238a49ec8abe1a92b21d3c67ac45ae/shaka-player.compiled.d.ts
